@@ -65,6 +65,7 @@
 \newacronym{mgf}{MGF}{moment-generating function}
 \newacronym{iff}{IFF}{if and only if}
 \newacronym{em}{EM}{expectation-maximization}
+\newacronym{umvue}{UMVUE}{unique minimum variance unbiased estimator}
 \newacronym{ols}{OLS}{ordinary least-squares}
 \newacronym{ss}{SS}{sum-of-squares}
 \newacronym{rss}{RSS}{residual sum-of-squares}
@@ -1249,12 +1250,78 @@ However, Equation \ref{eq:expectation-maximization-likelihood} is intractable be
     \caption{The expectation-maximization algorithm.}\label{alg:expectation-maximization}
     \begin{algorithmic}[1]
         \STATE Provide an initial estimate denoted $\theta^{(0)}$
-        \FOR{iterations $i = 1$ to $t$}
+        \FOR{iterations $i = 1$ to $m$}
             \STATE Compute the expected value of the log-likelihood of $\theta$ i.e., $Q(\theta | \theta^{(i)}) = \mathbb{E}_{Z\sim p(\cdot | X, \theta^{(i)}}\left[\log(p(X,Z|\theta)\right]$
             \STATE Maximize $Q$ over the parameter space i.e., $\theta^{(i+1)} = \underset{\theta}{\text{arg max }} Q(\theta | \theta^{(i)})$
         \ENDFOR
     \end{algorithmic}
 \end{algorithm}
+
+For expanded details on the properties of Algorithm \ref{alg:expectation-maximization} refer to either the summary given in \cite[Chapter~7.2.4]{casella_statistical_2002}, or \cite{dempster_maximum_1977}, which is the original paper. 
+
+\subsubsection{Evaluating estimators}
+
+With multiple options available, an important question arises - how does one select which estimator to use? It's clearly necessary to derive some means of evaluating an estimator's performance. A widely used criterion is the \gls{mse}, which is defined for unbiased estimators as follows:
+
+\begin{equation}\label{eq:mse}
+    \text{MSE}\left(\hat{\theta}_n\right) = \mathbb{E}\left[\left(\hat{\theta}_n - \theta\right)^2\right] = \text{Var}\left(\hat{\theta}_n\right)
+\end{equation}
+
+For biased estimators refer to Section \ref{sec:bias-variance-tradeoff}, which explains the decomposition of the \gls{mse} into variance- and bias-based components. However, suppose now that we have two candidate estimators, each unbiased. How then do we choose between them? The simplest solution is to choose the unbiased estimator with the smallest variance i.e., the \gls{umvue}. Any unbiased estimator $W^*$ is denoted an \gls{umvue} of any differentiable function of $\theta$ denoted $\tau(\theta)$ when to compared to any other unbiased estimator $W$ \gls{iff} the following conditions hold:
+
+\begin{equation}\label{eq:umvue-properties}
+    \begin{aligned}
+        \mathbb{E}_\theta[W^*] &= \tau(\theta) \\
+        \text{Var}_\theta(W^*) &\leq \text{Var}_\theta(W) \quad \forall \: W, \theta \\
+    \end{aligned}
+\end{equation}
+
+The Cramer-Rao inequality, defined in Equation \ref{eq:cramer-rao-inequality-2}, provides a lower bound on the variance of any estimator $W(X) = W(X_1, \dots, X_n$ for a random variable $X \sim f(x|\theta)$, given that $W$ has the following properties:
+
+\begin{equation}\label{eq:cramer-rao-inequality-1}
+    \begin{aligned}
+        \frac{d}{d\theta} E_\theta[W(X)] &= \int_{\mathcal{X}} \frac{\partial}{\partial\theta} (W(X)f(x|\theta) dx \\
+        \text{Var}_\theta(W(X)) &< \infty \\
+    \end{aligned}
+\end{equation}
+
+The inequality then follows from the Cauchy-Schwarz inequality as defined in Equations \ref{eq:covariance-inequality} and \ref{eq:holders-inequality}:
+
+\begin{equation}\label{eq:cramer-rao-inequality-2}
+    \text{Var}_\theta(W(X)) \geq \frac{\left(\frac{d}{d\theta}\mathbb{E}_\theta[W(X)]\right)^2}{\mathbb{E}_\theta\left[\left(\frac{\partial}{\partial\theta}\log(f(X|\theta))\right)^2\right]}
+\end{equation}
+
+The denominator in Equation \ref{eq:cramer-rao-inequality-2} is called \textit{Fisher's information} of the estimator. Clearly, as Fisher's information grows, the lower bound on the variance of the estimator shrinks. A corollary follows: if the \gls{pdf} or \gls{pmf} is of the exponential family as defined in Equation \ref{eq:exponential-family-dist}, the following is true:
+
+\begin{equation}\label{eq:fisher-information}
+    \mathbb{E}_\theta\left[\left(\frac{\partial}{\partial\theta}\log(f(X|\theta))\right)^2\right] = -\mathbb{E}_\theta\left[\frac{\partial^2}{\partial\theta^2} \log(f(X|\theta))\right]
+\end{equation}
+
+The Cramer-Rao lower bound cannot always be obtained; in fact, it can only be obtained under the following circumstances:
+
+\begin{equation}\label{eq:cramer-rao-attainment}
+    a(\theta) \left(W(x) - \tau(\theta)\right) = \frac{\partial}{\partial\theta} \log\left(\mathcal{L}(\theta|x)\right)
+\end{equation}
+
+As an example, consider a sequence of \glspl{rv} $X_1, \dots, X_n \sim \mathcal{N}(\mu, \sigma^2)$, where we are interested in estimating $\sigma^2$ and $\mu$ is unknown i.e., $\tau(\theta) = \sigma^2$. The likelihood is then:
+
+\begin{equation}\label{eq:normal-likelihood}
+    \mathcal{L}(\mu, \sigma^2; x_1, \dots, x_n) = (2\pi\sigma^2)^{-\frac{n}{2}} \text{exp}\left(-\frac{1}{2}\sum_{i=1}^n \frac{(x_i - \mu)^2}{\sigma^2}\right)
+\end{equation}
+
+Deriving the log-likelihood with respect to $\sigma^2$ gives us:
+
+\begin{equation}\label{eq:normal-log-likelihood-derived}
+    \frac{\partial}{\partial\sigma^2} \mathcal{l}(\mu, \sigma^2; x_1, \dots, x_n) = n(2\sigma)^{-4} \sum_{i=1}^n \frac{(x_i - \mu)^2}{n} - \sigma^2
+\end{equation}
+
+Taking $a(\theta) = n(2\sigma)^{-4}$ gives us $W(x) = \frac{(x_i - \mu)^2}{n}$, which is course only calculable if $\mu$ is known. In our case, since $\mu$ is unknown, the lower bound cannot be obtained. 
+
+\subsubsection{Rao-Blackwellization}
+
+Consider an unbiased estimator $W$ of $\tau(\theta)$. If $T$ is a sufficient statistic for $\theta$, we can define $\phi(T) = \mathbb{E}[W|T]$. We then have $\mathbb{E}_\theta[\phi(T)] = \tau(\theta)$ and $\text{Var}_\theta(\phi(T)) \leq \text{Var}_\theta(W)$, thus confirming that $\phi(T)$ is a uniformly better unbiased estimator of $\tau(\theta)$. For a proof see \cite[Chapter~7.3.3]{casella_statistical_2002}. The concrete utility of this theorem is that conditioning any unbiased estimator on a sufficient statistic improves the estimator uniformly. Thus, in our search for a best unbiased estimator, we should only consider estimators that are functions of sufficient statistics. For example, method of moments estimators are generally not functions of sufficient statistics, and thus can be improved via conditioning. For a detailed explanation see \cite[Chapter~7.5.1]{casella_statistical_2002}.
+
+\subsubsection{Profile likelihood}
 
 \section{Linear models}\label{sec:tools-ols}
 
@@ -1339,7 +1406,7 @@ Considering a regression model of the form shown in Equation \ref{eq:ols-model} 
 
 Under these assumptions, the \gls{ols} solution is the \gls{blue}.
 
-\subsection{The bias-variance tradeoff}
+\subsection{The bias-variance tradeoff}\label{sec:bias-variance-tradeoff}
 
 The \gls{mse} of a regression estimator can be decomposed as follows:
 
