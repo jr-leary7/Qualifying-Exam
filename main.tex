@@ -66,7 +66,9 @@
 \newacronym{iff}{IFF}{if and only if}
 \newacronym{em}{EM}{expectation-maximization}
 \newacronym{umvue}{UMVUE}{unique minimum variance unbiased estimator}
+\newacronym{ump}{UMP}{uniformly most powerful}
 \newacronym{ols}{OLS}{ordinary least-squares}
+\newacronym{gls}{GLS}{generalized least-squares}
 \newacronym{ss}{SS}{sum-of-squares}
 \newacronym{rss}{RSS}{residual sum-of-squares}
 \newacronym{tss}{TSS}{total sum-of-squares}
@@ -130,6 +132,7 @@
 \glsxtrnewsymbol[description={The leverage for observation \ensuremath{i} in a regression model}]{regress-leverage}{\ensuremath{h_i}}
 \glsxtrnewsymbol[description={Maximum likelihood estimate of \ensuremath{\theta} given \ensuremath{n} observations}]{mle-symbol}{\ensuremath{\hat{\theta}_n}}
 \glsxtrnewsymbol[description={Sample mean of random variable \ensuremath{X} given \ensuremath{n} observations}]{sample-mean}{\ensuremath{\bar{X}_n}}
+\glsxtrnewsymbol[description={Unbiased sample variance of a random variable given \ensuremath{n} observations}]{sample-variance-unbiased}{\ensuremath{\hat{s}_n^2}}
 \glsxtrnewsymbol[description={Cumulative distribution function for random variable \ensuremath{X}}]{cdf-symbol}{\ensuremath{F_X}}
 \glsxtrnewsymbol[description={The probability mass or density function of random variable \ensuremath{Y} given parameter(s) \ensuremath{\theta}}]{pdf-or-pmf}{\ensuremath{f(y|\theta)}}
 \glsxtrnewsymbol[description={Mean of a random variable}]{mu}{\ensuremath{\mu}}
@@ -237,6 +240,14 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~10.5]{wakefield_bayesian_2013}
     \item \cite[Chapter~3.4]{hastie_elements_2009}
     \item \cite[Chapter~11.1]{agresti_foundations_2015}
+\end{itemize}
+
+\subsection{Generalized least-squares}
+
+\begin{itemize}
+    \item \cite[Chapter~8.1]{faraway_linear_2015}
+    \item \cite[Chapter~2.7.2]{agresti_foundations_2015}
+    \item \cite[Chapter~5.6.2]{wakefield_bayesian_2013}
 \end{itemize}
 
 \section{Generalized linear models}\label{sec:reading-glm}
@@ -1169,10 +1180,10 @@ Lastly, we can say that if a minimal sufficient statistic exists, any complete s
 
 \subsubsection{Likelihood}
 
-We define the \textit{likelihood function} of $\theta$ given that $x$ wass observed as:
+We define the \textit{likelihood function} of $\theta$ given that $x$ was observed as:
 
 \begin{equation}\label{eq:likelihood-function}
-    \mathcal{L}(\theta|x) = f(x|\theta)
+    \mathcal{L}(\theta|x) = \prod_{i=1}^n f(x_i|\theta)
 \end{equation}
 
 For discrete $X$, we have:
@@ -1257,7 +1268,13 @@ However, Equation \ref{eq:expectation-maximization-likelihood} is intractable be
     \end{algorithmic}
 \end{algorithm}
 
-For expanded details on the properties of Algorithm \ref{alg:expectation-maximization} refer to either the summary given in \cite[Chapter~7.2.4]{casella_statistical_2002}, or \cite{dempster_maximum_1977}, which is the original paper. 
+For expanded details on the properties of Algorithm \ref{alg:expectation-maximization} refer to either the summary given in \cite[Chapter~7.2.4]{casella_statistical_2002}, or \cite{dempster_maximum_1977}, which is the original paper. An example application for a simple liner model with missing data in $y$ is shown below:
+
+\begin{listing}[H]
+\inputminted{r}{Example-Code/em_algorithm.R}
+\caption{Estimating regression parameters via the EM algorithm.}
+\label{listing:em-algorithm-example}
+\end{listing}
 
 \subsubsection{Evaluating estimators}
 
@@ -1322,6 +1339,197 @@ Taking $a(\theta) = n(2\sigma)^{-4}$ gives us $W(x) = \frac{(x_i - \mu)^2}{n}$, 
 Consider an unbiased estimator $W$ of $\tau(\theta)$. If $T$ is a sufficient statistic for $\theta$, we can define $\phi(T) = \mathbb{E}[W|T]$. We then have $\mathbb{E}_\theta[\phi(T)] = \tau(\theta)$ and $\text{Var}_\theta(\phi(T)) \leq \text{Var}_\theta(W)$, thus confirming that $\phi(T)$ is a uniformly better unbiased estimator of $\tau(\theta)$. For a proof see \cite[Chapter~7.3.3]{casella_statistical_2002}. The concrete utility of this theorem is that conditioning any unbiased estimator on a sufficient statistic improves the estimator uniformly. Thus, in our search for a best unbiased estimator, we should only consider estimators that are functions of sufficient statistics. For example, method of moments estimators are generally not functions of sufficient statistics, and thus can be improved via conditioning. For a detailed explanation see \cite[Chapter~7.5.1]{casella_statistical_2002}.
 
 \subsubsection{Profile likelihood}
+
+Oftentimes we are not interested in every parameter of a distribution; these uninteresting variables are referred to as \textit{nuisance parameters}. In other cases it might be exorbitantly difficult to maximize the full likelihood. In either event, suppose we observe data $x_1, \dots, x_n$, and suppose as well that can partition our vector of total parameters into two parts $\theta = [\delta, \xi]$, where $\xi$ is the set of nuisance parameters and $\delta$ is what we're really interested in. The overall likelihood function is thus:
+
+\begin{equation}\label{eq:profile-likelihood-1}
+    \mathcal{L}(\theta; x_1, \dots, x_n) = \mathcal{L}(\delta, \xi; x_1, \dots, x_n) = \prod_{i=1}^n f(x_i|\delta, \xi) 
+\end{equation}
+
+We can then define the profile likelihood as follows:
+
+\begin{equation}\label{eq:profile-likelihood-2}
+    \mathcal{L}_P(\delta; x_1, \dots, x_n) = \sup_{\xi} \mathcal{L}(\delta, \xi; x_1, \dots, x_n)
+\end{equation}
+
+The primary benefit or application of the profile likelihood approach is the estimation of \glspl{ci}, which can perform better than those based on the asymptotic Normal distribution of the \gls{mle} when the sample size is small or the \gls{mle} has a non-Gaussian distribution. The profile likelihood \gls{ci} is defined as follows, using the notation from \cite{venzon_method_1988} where $\chi^2_k(1-\alpha)$ is the $1-\alpha$ quantile of a $\chi$-squared distribution with $k$ \gls{df}:
+
+\begin{equation}\label{eq:profile-likelihood-ci}
+    \left[\theta \colon 2\left(\mathcal{l}\left(\hat{\theta}_n\right) - \mathcal{l}(\theta)\right) \leq \chi^2_k(1-\alpha)\right]
+\end{equation}
+
+For a brief overview of profile likelihood as regards logistic regression, see \cite{cole_maximum_2014}. \cite{royston_profile_2007} provides an overview of profile likelihood-based confidence intervals with example Stata code. The R package \href{https://cran.r-project.org/web/packages/ProfileLikelihood/}{\texttt{ProfileLikelihood}} implements functionality to estimate profile likelihood \glspl{ci} for a variety of commonly-used statistical models. 
+
+\subsection{Hypothesis testing}
+
+Statistical experiments often take the form of a \textit{hypothesis test}. A hypothesis is a statement about the population value of some parameter of interest. The two parts of a hypothesis test are the \textit{null} and \textit{alternative} hypothesis, which we'll denote $H_0$ and $H_1$, respectively. Commonly, the null hypothesis takes the form of assuming no effect, whereas the alternative hypothesis assumes some effect. Mathematically, for some parameter of interest $\theta$ we have the following forms of the hypotheses:
+
+\begin{equation}\label{eq:hypotheses}
+    \begin{aligned}
+        H_0 &\colon \theta \in \Theta_0 \\
+        H_1 &\colon \theta \in \Theta_0^c \\
+    \end{aligned}
+\end{equation}
+
+A hypothesis test then defines a rule that specifies which values of a given \textit{test statistic} lead to the rejection of the null hypothesis. This region of the sample space, which we've denoted $\Theta_0^c$, is also known as the \textit{rejection region}. We note that if the test statistic does not fall inside the rejection region, we say that we fail to reject the null hypothesis - \textit{not} that we accept it. The question then arises: what kind of test should we perform?
+
+\subsubsection{Likelihood ratio tests}
+
+The \gls{lrt} is often used in scenarios when maximum likelihood estimation is applied. The \gls{lrt} is defined as the ratio of the likelihood under the null versus the empirically maximized likelihood:
+
+\begin{equation}\label{eq:lrt-form}
+    \lambda(x) = \frac{\sup_{\Theta_0} \mathcal{L}(\theta|x)}{\sup_{\Theta} \mathcal{L}(\theta|x)}
+\end{equation}
+
+The rejection region for an \gls{lrt} is then:
+
+\begin{equation}\label{eq:lrt-rejection-region}
+    \{x \colon \lambda(x) \leq c\} \quad \forall c \in [0, 1]
+\end{equation}
+
+As a motivating example, consider $X_1, \dots, X_n \sim \mathcal{N}(\mu, 1)$. We'd like to test the null hypothesis $H_0 \colon \mu = \mu_0$ versus the alternative hypothesis $H_1 \colon \mu \neq \mu_0$. The numerator of the \gls{lrt} is then $\mathcal{L}(\mu_0|x)$ whereas the denominator is the likelihood given the sample mean, which is the unrestricted \gls{mle} of $\mu$ i.e., $\mathcal{L}(\bar{x}_n|x)$. Thus the \gls{lrt} is:
+
+\begin{equation}\label{eq:lrt-normal-rvs}
+    \begin{aligned}
+        \lambda(x) 
+          &= \frac{(2\pi)^{-\frac{n}{2}} \text{exp}\left(-\frac{1}{2} \sum_{i=1}^n (x_i - \mu_0)^2\right)}{(2\pi)^{-\frac{n}{2}} \text{exp}\left(-\frac{1}{2} \sum_{i=1}^n (x_i - \bar{x}_n)^2\right)} \\
+          &= \text{exp}\left(\frac{1}{2} \left(-\sum_{i=1}^n (x_i - \mu_0)^2 + \sum_{i=1}^n (x_i - \bar{x}_n)^2\right)\right) \\
+          &= \text{exp}\left(-\frac{n(\bar{x}_n - \mu_0)^2}{2}\right)
+    \end{aligned}
+\end{equation}
+
+With some finagling the rejection region can be formulated as:
+
+\begin{equation}\label{eq:lrt-normal-rvs-rejection-region}
+    \left\{x \colon |\bar{x}_n - \mu_0| \geq \sqrt{-n^{-1}2\log(c)}\right\}
+\end{equation}
+
+As mentioned previously, $T(X) = \bar{X}_n$ is a sufficient statistic for $\mu$. This motivates the following theorem from \cite[Chapter~8.2.1]{casella_statistical_2002}: if $T(X)$ is a sufficient statistic for $\theta$ and $\lambda^*(t)$ and $\lambda(x)$ are the \glspl{lrt} based on $T$ and $X$, then $\lambda^*(T(x)) = \lambda(x) \: \forall x \in \Omega$. 
+
+\subsubsection{Intersections and unions of tests}
+
+In some cases we might desire to test more then one null hypothesis simultaneously. These more complex tests can take two forms, the first being \textit{union-intersection} tests and the second being \textit{intersection-union} tests. The null hypothesis in the first case is defined like so, where we reject the null if \textit{any} of the individual elements of $H_0$ are rejected:
+
+\begin{equation}\label{eq:union-intersection-test}
+    H_0 \colon \theta \in \bigcap_{\gamma \in \Gamma} \Theta_\gamma 
+\end{equation}
+
+The intersection-union test is defined similarly, though in this case we only reject $H_0$ if \textit{all} of the individual null hypotheses are rejected: 
+
+\begin{equation}\label{eq:intersection-union-test}
+    H_0 \colon \theta \in \bigcup_{\gamma \in \Gamma} \Theta_\gamma 
+\end{equation}
+
+\subsubsection{Evaluating tests}
+
+Hypothesis tests can make two types of errors, the rather unhelpfully-named Type I and Type II errors. Type I errors occur when the null hypothesis is incorrectly rejected, while Type II errors happen when we fail to reject the null when the alternative hypothesis is true. For a tabular description of these errors see \cite[Chapter~8.3.1]{casella_statistical_2002}. The two circumstances lead to the definition of the \textit{power function}, which is defined as follows for any test with rejection region $R$:
+
+\begin{equation}\label{eq:power-function}
+    \beta(\theta) = \mathbb{P}_\theta(X \in R)
+\end{equation}
+
+Ideally, $\beta(\theta)$ should be near 0 for all $\theta \in \Theta_0$, and near 1 for all $\theta \in \Theta_0^c$.  We refer to a given test as being of level $\alpha \in [0, 1]$ if $\sup_{\theta \in \Theta_0} \leq \alpha$. We call tests \textit{unbiased} if the following is true:
+
+\begin{equation}\label{eq:unbiased-hypothesis-test}
+    \beta(\theta^\prime) \geq \beta(\theta^{\prime\prime}) \quad \forall \: \theta^\prime \in \Theta_0 \text{ and } \theta^{\prime\prime} \in \Theta_0^c
+\end{equation}
+
+Lastly, we denote a test among a class of tests $\mathcal{C}$ having power functions $\beta^\prime(\theta)$ \gls{ump} if the following holds:
+
+\begin{equation}\label{eq:ump-hypothesis-test}
+    \beta(\theta) \geq \beta^\prime(\theta) \quad \forall \: \theta \in \Theta_0^c \text{ and } \beta^\prime(\theta) \in \mathcal{C}
+\end{equation}
+
+\subsubsection{The Neyman-Pearson lemma}
+
+Suppose we would like to test a null hypothesis $H_0 \colon \theta = \theta_0$ versus an alternative $H_1 \colon \theta = \theta_1$. Any test satisfying the following conditions for some $k \geq 0$ is then a \gls{ump} test having level $\alpha$:
+
+\begin{equation}\label{eq:neyman-pearson-lemma}
+    \begin{aligned}
+        f(x|\theta_1) > k f(x|\theta_0) &\implies x \in R \\
+        f(x|\theta_1) < k f(x|\theta_0) &\implies x \in R^c \\
+        \mathbb{P}_{\theta_0}(X \in R) &= \alpha \\
+    \end{aligned}
+\end{equation}
+
+There are several implications of the Neyman-Pearson lemma which can be found in \cite[Chapter~8.3.2]{casella_statistical_2002}. 
+
+\subsection{Confidence intervals}
+
+When estimating parameters, it is often of interest to estimate as well an interval within which the estimated parameter is likely to fall. We define an interval estimate as follows:
+
+\begin{equation}\label{eq:interval-estimator}
+    L(x) \leq \theta \leq U(x) \quad \forall \: x \in \mathcal{X}
+\end{equation}
+
+The random interval $[L(X), U(X)]$ is called the interval estimator. The utility of the interval estimator over the point estimate is that we gain a positive probability of being correct about our estimate, since e.g., $\mathbb{P}(\bar{X}_n = \mu) = 0$ by definition. This positive chance of being correct is called the \textit{coverage probability}, and is computed as $\mathbb{P}(\theta \in [L(X), U(X)] | \theta)$. A common method of computing the \gls{ci} of an estimate is the inversion of the acceptance region of a test statistic. This is best explained by an example: suppose we observe $X_1, \dots, X_n \sim \mathcal{N}(\mu, \sigma^2)$ where the variance is known, and we are interested in testing $H_0 \colon \mu = \mu_0$ versus $H_1 \colon \mu \neq \mu_0$. The most powerful, unbiased, level $\alpha$ test has rejection region:
+
+\begin{equation}\label{eq:normal-hypothesis-test-rejection-region}
+    \left\{x \colon |\bar{x}_n - \mu| > z_{\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}}\right\}
+\end{equation}
+
+Ergo, we would fail to reject $H_0$ if the following were true:
+
+\begin{equation}\label{eq:normal-hypothesis-test-acceptance-region}
+    \bar{x}_n - z_{\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}} \leq \mu_0 \leq \bar{x}_n + z_{\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}}
+\end{equation}
+
+Thus we have computed a \gls{ci} of level $1 - \alpha$ for $\mu$. :
+
+\begin{equation}\label{eq:normal-hypothesis-ttest-acceptance-probability}
+    \mathbb{P}\left(\bar{X}_n - z_{\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}} \leq \mu \leq \bar{X}_n + z_{\frac{\alpha}{2}} \frac{\sigma}{\sqrt{n}}\right) = 1 - \alpha 
+\end{equation}
+
+An alternate method for the estimation of \glspl{ci} is the method of \textit{pivots}. Pivots are generally defined in Table \ref{table:distribution-pivots} for each type of location-scale distribution. Mathematically, a \gls{rv} $Q(X, \theta) = Q(X_1, \dots, X_n, \theta)$ is a pivot \gls{iff} its distribution is independent of all parameters.
+
+% make table rows larger
+\renewcommand{\arraystretch}{2}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{||l l l||} 
+ \hline
+ \textbf{PDF Type} & \textbf{PDF Form} & \textbf{Pivot} \\ [0.5ex] 
+  \hline\hline
+  Location & $f(x - \mu)$ & $\bar{X}_n - \mu$ \\
+  \hline 
+  Scale & $\sigma^{-1} f \left(\frac{x}{\sigma}\right)$ & $\sigma^{-1}\bar{X}_n$ \\
+  \hline 
+  Location-scale & $\sigma^{-1} f\left(\frac{x - \mu}{\sigma}\right)$ & $\frac{\bar{X}_n - \mu}{S_n}$ \\
+  \hline 
+\end{tabular}
+\caption{Pivots for each type of location-scale family distribution.}
+\label{table:distribution-pivots}
+\end{table}
+
+% reset table row height
+\renewcommand{\arraystretch}{1.5}
+
+For example, given $X_1, \dots, X_n \sim \mathcal{N}(\mu, \sigma^2)$, the pivot is the t-statistic, which is a pivot because the t distribution does not depend on $\mu$ or $\sigma^2$:
+
+\begin{equation}\label{eq:t-statistic}
+    \frac{\bar{X}_n - \mu}{\frac{S_n}{\sqrt{n}}}
+\end{equation}
+
+Pivots can be used to construct \glspl{ci} by selecting $a$ and $b$ independent of $\theta$ such that the following is true:
+
+\begin{equation}\label{eq:pivot-confidence-interval}
+    \mathbb{P}_\theta\left(a \leq Q(X,\theta) \leq b\right) \geq 1 - \alpha 
+\end{equation}
+
+In general, to find a pivot we can use the following technique from \cite[Chapter~9.2.2]{casella_statistical_2002}. Suppose the \gls{pdf} of a statistic $T$ can be formulated as:
+
+\begin{equation}\label{eq:pivot-pdf}
+    f(t|\theta) = g(Q(t, \theta)) \left|\frac{\partial}{\partial\theta} Q(t, \theta)\right|
+\end{equation}
+
+for arbitrary function $g$ and monotone function $Q$, then $Q(T, \theta)$ is a pivot. For example, consider a $X_1, \dots, X_n \sim \mathcal{N}(\mu, \sigma^2)$ where both parameters are unknown. We can use the location-scale pivot from Table \ref{table:distribution-pivots}, which has a t distribution with $n - 1$ \gls{df}. The \gls{ci} for $\mu$ is then:
+
+\begin{equation}\label{eq:normal-ci}
+    \left\{\mu \colon \bar{x}_n - t_{n-1,\frac{\alpha}{2}} \frac{\hat{s}_n}{\sqrt{n}} \leq \mu \leq \bar{x}_n + t_{n-1,\frac{\alpha}{2}} \frac{\hat{s}_n}{\sqrt{n}}\right\}
+\end{equation}
+
+Intervals can also be estimated under a Bayesian paradigm, for details on this approach refer to Section \ref{sec:bayes}. 
 
 \section{Linear models}\label{sec:tools-ols}
 
@@ -1738,7 +1946,75 @@ In Source Code \ref{listing:sandwich-example} we showcase the utility of the \hr
 \label{listing:sandwich-example}
 \end{listing}
 
-\subsection{Bayesian inference}
+\subsection{Generalized least-squares}
+
+Sometimes the assumptions of \gls{ols} regression are violated; in practice, one of the bigger issues is if the errors are somehow dependent or correlated. In this case we should opt to use the method of \gls{gls}. Under the \gls{ols} assumptions we take it for granted that $\text{Var}(\epsilon) = \sigma^2 I$. Under the \gls{gls} paradigm we assume instead that $\text{Var}(\epsilon) = \sigma^2 \Sigma$, where $\Sigma$ is some known positive definite covariance matrix. We can represent $\Sigma$ as $\Sigma = SS^\intercal$, which is equivalent to taking the square root of a matrix. Our regression problem then takes the following form:
+
+\begin{equation}\label{eq:ols-gls-model-form}
+    \begin{aligned}
+        y &= \beta X + \epsilon \\
+        S^{-1} y &= S^{-1} \beta X + S^{-1} \epsilon \\
+        \Tilde{y} &= \beta \Tilde{X} + \Tilde{\epsilon} \\
+    \end{aligned}
+\end{equation}
+
+The variance of the transformed error term is as follows, making use of the fact that $\left(S^{-1}\right)^\intercal = \left(S^\intercal\right)^{-1}$ (\href{https://math.stackexchange.com/questions/340233/transpose-of-inverse-vs-inverse-of-transpose}{proof}):
+
+\begin{equation}\label{eq:ols-gls-error-variance-transformed}
+    \begin{aligned}
+        \text{Var}(\Tilde{\epsilon})
+          &= \text{Var}\left(S^{-1} \epsilon\right) \\
+          &= S^{-1}\text{Var}(\epsilon)\left(S^\intercal\right)^{-1} \\
+          &= S^{-1} \sigma^2 SS^\intercal \left(S^\intercal\right)^{-1} \\
+          &= \sigma^2 I \\
+    \end{aligned}
+\end{equation}
+
+The \gls{tss} is given by:
+
+\begin{equation}\label{eq:ols-gls-tss}
+    (y - \beta X)^\intercal \Sigma^{-1} (y - \beta X)
+\end{equation}
+
+and is minimized by:
+
+\begin{equation}\label{eq:ols-gls-solution}
+    \hat{\beta}^{\text{GLS}} = \left(X^\intercal \Sigma^{-1} X\right)^{-1} X^\intercal \Sigma^{-1} y
+\end{equation}
+
+The variance of the \gls{gls} coefficients is:
+
+\begin{equation}\label{eq:ols-gls-coef-variance}
+    \text{Var}\left(\hat{\beta}^{\text{GLS}}\right) = \left(X^\intercal \Sigma^{-1} X\right)^{-1} \sigma^2
+\end{equation}
+
+As per \cite[Chapter~2.7.2]{agresti_foundations_2015} the \gls{gls} coefficients are unbiased i.e., $\mathbb{E}\left[\hat{\beta}^{\text{GLS}}\right] = \beta$. The fitted values are computed as follows:
+
+\begin{equation}\label{eq:ols-gls-fitted-values}
+    \hat{\mu} = X \left(X^\intercal \Sigma^{-1} X\right)^{-1} X^\intercal \Sigma^{-1} y
+\end{equation}
+
+and we estimate $\sigma^2$ via:
+
+\begin{equation}\label{eq:ols-gls-sigma2-estimate}
+    \hat{\sigma}^2 = \frac{\left(y - \hat{\mu}\right)^\intercal \Sigma^{-1} \left(y - \hat{\mu}\right)}{n - p}
+\end{equation}
+
+\subsubsection{Software implementations}
+
+There aren't a lot of options for fitting \gls{gls} models in R. The primary two that I'm aware of are the \href{https://cran.r-project.org/web/packages/nlme/index.html}{\texttt{nlme}} and \href{https://cran.r-project.org/web/packages/car/index.html}{\texttt{car}} packages, both of which export a \texttt{gls()} function. We'll demonstrate this functionality in the next section. 
+
+\subsubsection{Example code}
+
+Of course, the trickiest part of \gls{gls} is that one must know the variance-covariance matrix $\Sigma$. In practice, $\Sigma$ is often determined by a combination of intuition based on the experimental design and empirical estimation from the data. 
+
+\begin{listing}[h!]
+\inputminted{r}{Example-Code/generalized_least_squares.R}
+\caption{Fitting a generalized least-squares model using \texttt{nlme}.}
+\label{listing:gls-example}
+\end{listing}
+
+\subsection{Bayesian inference}\label{sec:bayes}
 
 Bayesian inference is based on the posterior probability distribution of $\theta$ after observing data $y$. The posterior is defined using Baye's Theorem:
 
@@ -2901,7 +3177,7 @@ The integrals in Equation \ref{eq:glm-glmm-model-likelihood} are generally not s
 \label{table:glmm-software}
 \end{table}
 
-There also exist options outside of R, though R is generally considered to be the best option for fitting \glspl{glmm}. SAS includes the well-documented \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#glimmix_toc.htm}{\texttt{PROC GLMMIX}}, Python's \href{https://www.statsmodels.org/stable/mixed_glm.html}{\texttt{statsmodels.genmod.bayes\_mixed\_glm}} supports Binomial and Poisson \glspl{glmm}, and Julia has \href{https://juliastats.org/MixedModels.jl/stable/}{\texttt{MixedModels.jl}}, which is similar in functionality to \texttt{lme4}.  
+There also exist implementations outside of R, though R is generally considered to be the best option for fitting \glspl{glmm}. SAS includes the well-documented \href{https://support.sas.com/documentation/cdl/en/statug/63033/HTML/default/viewer.htm#glimmix_toc.htm}{\texttt{PROC GLMMIX}}, Python's \href{https://www.statsmodels.org/stable/mixed_glm.html}{\texttt{statsmodels.genmod.bayes\_mixed\_glm}} supports Binomial and Poisson \glspl{glmm}, and Julia has \href{https://juliastats.org/MixedModels.jl/stable/}{\texttt{MixedModels.jl}}, which is similar in functionality to \texttt{lme4}.  
 
 \subsubsection{Model fitting}
 
