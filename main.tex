@@ -69,6 +69,7 @@
 \newacronym{ump}{UMP}{uniformly most powerful}
 \newacronym{ols}{OLS}{ordinary least-squares}
 \newacronym{gls}{GLS}{generalized least-squares}
+\newacronym{wls}{WLS}{weighted least-squares}
 \newacronym{ss}{SS}{sum-of-squares}
 \newacronym{rss}{RSS}{residual sum-of-squares}
 \newacronym{tss}{TSS}{total sum-of-squares}
@@ -113,6 +114,7 @@
 \glsxtrnewsymbol[description={Sigma-algebra of a probability space}]{sigma-algebra}{\ensuremath{\mathcal{B}}}
 \glsxtrnewsymbol[description={Probability function of a probability space}]{prob-function}{\ensuremath{\mathcal{P}}}
 \glsxtrnewsymbol[description={The support of random variable \ensuremath{X}}]{support}{\ensuremath{\mathcal{X}}}
+\glsxtrnewsymbol[description={The set of real numbers}]{reals}{\ensuremath{\mathbb{R}}}
 \glsxtrnewsymbol[description={Derivative of \ensuremath{f} with respect to \ensuremath{x}}]{derivative}{\ensuremath{f^\prime(x)}}
 \glsxtrnewsymbol[description={Partial derivative of \ensuremath{f} with respect to \ensuremath{x}}]{partial-derivative}{\ensuremath{\frac{\partial f(x, y)}{\partial x}}}
 \glsxtrnewsymbol[description={Natural logarithm of \ensuremath{x}}]{natural-log}{\ensuremath{\log(x)}}
@@ -128,13 +130,14 @@
 \glsxtrnewsymbol[description={True coefficients in a regression model}]{regress-coefs}{\ensuremath{\beta}}
 \glsxtrnewsymbol[description={Link function in a generalized linear (mixed) model}]{regress-link}{\ensuremath{g}}
 \glsxtrnewsymbol[description={Residual for observation \ensuremath{i} in a regression model}]{regress-residual}{\ensuremath{r_i}}
+\glsxtrnewsymbol[description={Weight for observation \ensuremath{i} in a regression model}]{regress-weight}{\ensuremath{w_i}}
 \glsxtrnewsymbol[description={The projection or hat matrix in a regression model}]{regress-hat-matrix}{\ensuremath{H}}
 \glsxtrnewsymbol[description={The leverage for observation \ensuremath{i} in a regression model}]{regress-leverage}{\ensuremath{h_i}}
 \glsxtrnewsymbol[description={Maximum likelihood estimate of \ensuremath{\theta} given \ensuremath{n} observations}]{mle-symbol}{\ensuremath{\hat{\theta}_n}}
 \glsxtrnewsymbol[description={Sample mean of random variable \ensuremath{X} given \ensuremath{n} observations}]{sample-mean}{\ensuremath{\bar{X}_n}}
 \glsxtrnewsymbol[description={Unbiased sample variance of a random variable given \ensuremath{n} observations}]{sample-variance-unbiased}{\ensuremath{\hat{s}_n^2}}
 \glsxtrnewsymbol[description={Cumulative distribution function for random variable \ensuremath{X}}]{cdf-symbol}{\ensuremath{F_X}}
-\glsxtrnewsymbol[description={The probability mass or density function of random variable \ensuremath{Y} given parameter(s) \ensuremath{\theta}}]{pdf-or-pmf}{\ensuremath{f(y|\theta)}}
+\glsxtrnewsymbol[description={The probability mass or density function of random variable \ensuremath{Y} given parameter(s) \ensuremath{\theta}}]{pdf-or-pmf}{\ensuremath{f_Y(y|\theta)}}
 \glsxtrnewsymbol[description={Mean of a random variable}]{mu}{\ensuremath{\mu}}
 \glsxtrnewsymbol[description={Variance of a random variable}]{sigma-squared}{\ensuremath{\sigma^2}}
 \glsxtrnewsymbol[description={Expectation operator}]{expectation}{\ensuremath{\mathbb{E}}}
@@ -188,6 +191,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~2]{faraway_linear_2015} 
     \item \cite[Chapter~2]{wakefield_bayesian_2013}
     \item \cite[Chapter~2.1]{agresti_foundations_2015}
+    \item \cite[Chapter~2]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Quasi-likelihood estimation}
@@ -202,6 +206,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~3]{faraway_linear_2015}
     \item \cite[Chapter~2.9]{wakefield_bayesian_2013}
     \item \cite[Chapter~3.2]{agresti_foundations_2015}
+    \item \cite[Chapter~2.8]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Bootstrap methods}
@@ -224,6 +229,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~6]{faraway_linear_2015}
     \item \cite[Chapter~5.11]{wakefield_bayesian_2013}
     \item \cite[Chapter~2.5]{agresti_foundations_2015}
+    \item \cite[Chapter~3]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Model selection}
@@ -259,6 +265,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~8.1]{faraway_extending_2016}
     \item \cite[Chapter~4.1]{agresti_foundations_2015}
     \item \cite[Chapter~2.3]{hardin_generalized_2018}
+    \item \cite[Chapter~5.3]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Model fitting}
@@ -268,6 +275,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~2]{dobson_introduction_2018}
     \item \cite[Chapter~4.5]{agresti_foundations_2015}
     \item \cite[Chapter~3]{hardin_generalized_2018}
+    \item \cite[Chapter~6]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Model diagnostics}
@@ -277,6 +285,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~6.9]{wakefield_bayesian_2013}
     \item \cite[Chapter~4.4]{agresti_foundations_2015}
     \item \cite[Chapter~4]{hardin_generalized_2018}
+    \item \cite[Chapter~8]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Logistic regression}
@@ -287,6 +296,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~7]{wakefield_bayesian_2013}
     \item \cite[Chapter~5]{agresti_foundations_2015}
     \item \cite[Chapters~9-11]{hardin_generalized_2018}
+    \item \cite[Chapter~9]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Count regression}
@@ -296,6 +306,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~5]{faraway_extending_2016}
     \item \cite[Chapter~7]{agresti_foundations_2015}
     \item \cite[Chapters~12-14]{hardin_generalized_2018}
+    \item \cite[Chapter~10]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Nominal and ordinal regression}
@@ -313,6 +324,7 @@ This document is a personalized study guide for the University of Florida's Depa
     \item \cite[Chapter~6.5.3]{wakefield_bayesian_2013}
     \item \cite[Chapter~5.7]{dobson_introduction_2018}
     \item \cite[Chapter~4.3]{agresti_foundations_2015}
+    \item \cite[Chapter~7]{dunn_generalized_2018}
 \end{itemize}
 
 \subsection{Generalized estimating equations}
@@ -1843,7 +1855,7 @@ The \texttt{glmnet} package is the most widely-used option for fitting regulariz
 \label{listing:glmnet-example}
 \end{listing}
 
-\subsection{Sandwich variance estimation}
+\subsection{Sandwich variance estimation}\label{sec:sandwich-variance-estimation}
 
 To start we define an estimating function as follows, where $\mathbb{E}[G_n(\theta)] = 0$ and $\theta$ is a $p$-dimensional vector:
 
@@ -2006,12 +2018,38 @@ There aren't a lot of options for fitting \gls{gls} models in R. The primary two
 
 \subsubsection{Example code}
 
-Of course, the trickiest part of \gls{gls} is that one must know the variance-covariance matrix $\Sigma$. In practice, $\Sigma$ is often determined by a combination of intuition based on the experimental design and empirical estimation from the data. 
+Of course, the trickiest part of \gls{gls} is that one must know the variance-covariance matrix $\Sigma$. In practice, $\Sigma$ is often determined by a combination of intuition based on the experimental design and empirical estimation from the data. We demonstrate this in Source Code \ref{listing:gls-example}, where we fit \gls{ols} and \gls{gls} models to the global warming dataset, which contains proxy global warming covariates from several areas that are used to predict temperature in the Northern Hemisphere across time. Since the units are evenly-spaced (years), we choose an \gls{ar}-1 correlation structure. We then compare the two models, which are technically nested, using an F test. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/generalized_least_squares.R}
 \caption{Fitting a generalized least-squares model using \texttt{nlme}.}
 \label{listing:gls-example}
+\end{listing}
+
+\subsection{Weighted least-squares}
+
+Similar to \gls{gls} is the concept of \gls{wls} regression, which as per \cite[Chapter~8.2]{faraway_linear_2015} is to be used when the errors do not exhibit constant variance. In fact, \gls{wls} is a special case of \gls{gls}. In this case, we define $\Sigma$ as a diagonal matrix of weights i.e.:
+
+\begin{equation}\label{eq:ols-wls-sigma-form}
+    \Sigma = \text{Diag}\left(\frac{1}{w_1}, \dots, \frac{1}{w_n}\right)
+\end{equation}
+
+We then define $S$ as:
+
+\begin{equation}\label{eq:ols-wls-s-matrix}
+    S = \text{Diag}\left(\frac{1}{\sqrt{w_1}}, \dots, \frac{1}{\sqrt{w_n}}\right)
+\end{equation}
+
+The question then arises of how one sets the weight for each observation. This depends on why weighting is desirable. If for example, your response is some sort of average, then it would make sense to weight the observations by the sample size for each observation, denoted $n_i$. If observations are of varying quality, weights can be set manually to reflect this. Lastly, and perhaps most-commonly, if heteroskedasticity is present it makes sense to weight the observations by $w_i = \frac{1}{\sigma^2_i}$. This obviously requires estimation of $\sigma^2_i$, which we'll show how to do in the following section. 
+
+\subsubsection{Example code}
+
+In Source Code \ref{listing:wls-example} we generate simulated data with heteroskedasticity, specifically with the variance being positively correlated with $X$. After fitting an \gls{ols} model, we model the residuals as a function of the fitted values, then use the inverse of the squared fitted values from that model as weights. When comparing the \gls{ols} and \gls{wls} models via adjusted $R^2$, we see that the \gls{wls} model performs much better. In addition, when viewing the output from \texttt{summary()}, we can see that the residual \gls{se} of the \gls{wls} model is lower than that of the \gls{ols} model. This disparity is confirmed when comparing the \gls{aic} of the two models - we see that the \gls{wls} model's value is a fair bit lower. 
+
+\begin{listing}[h!]
+\inputminted{r}{Example-Code/weighted_least_squares.R}
+\caption{Fitting a weighted least-squares model with empirically estimated weights.}
+\label{listing:wls-example}
 \end{listing}
 
 \subsection{Bayesian inference}\label{sec:bayes}
@@ -2277,7 +2315,7 @@ There are two main R packages for the fitting of \gls{lmm}: \href{https://cran.r
 
 \subsubsection{Example code}
 
-Here we use the \texttt{lme4} package to fit two different \glspl{lmm}, one with just random intercepts and one with random slopes as well, to a dataset composed of subject reaction times after repeated days of sleep deprivation. Since we fit the models using maximum likelihood we can use the \gls{aic} as defined in Equation \ref{eq:glm-fit-measures} to compare the models; we prefer the model with the random slopes included. 
+In Source Code \ref{listing:lme4-example} we use the \texttt{lme4} package to fit two different \glspl{lmm}, one with just random intercepts and one with random slopes as well, to a dataset composed of subject reaction times after repeated days of sleep deprivation. Since we fit the models using maximum likelihood we can use the \gls{aic} as defined in Equation \ref{eq:glm-fit-measures} to compare the models; we prefer the model with the random slopes included. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/lme4_random_slopes.R}
@@ -2285,7 +2323,7 @@ Here we use the \texttt{lme4} package to fit two different \glspl{lmm}, one with
 \label{listing:lme4-example}
 \end{listing}
 
-Next, we can use the \texttt{pbkrtest::KRmodcomp()} function to perform an F-test of a fixed effect for time using the Kenward-Roger DF adjustment. Note: the function requires that both models be fit with REML instead of maximum likelihood; if it detects that the models were not fit with REML it will re-fit them internally using REML before performing the test. 
+Next, in Source Code \ref{listing:pbkrtest-example} we use the \texttt{pbkrtest::KRmodcomp()} function to perform an F test of a fixed effect for time using the Kenward-Roger DF adjustment. Note: the function requires that both models be fit with REML instead of maximum likelihood; if it detects that the models were not fit with REML it will re-fit them internally using REML before performing the test. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/lme4_kr_comparison.R}
@@ -2293,7 +2331,7 @@ Next, we can use the \texttt{pbkrtest::KRmodcomp()} function to perform an F-tes
 \label{listing:pbkrtest-example}
 \end{listing}
 
-In order to test the significance of a random effect we can use the \texttt{RLRsim} package, which implements the parametric bootstrap in order to approximate the null distribution of an LRT or RLRT. A downside of this implementation is that it can only test a single random effect at a time. 
+In order to test the significance of a random effect we can use the \texttt{RLRsim} package, which implements the parametric bootstrap in order to approximate the null distribution of an LRT or RLRT. A downside of this implementation is that it can only test a single random effect at a time, which we display in Source Code \ref{listing:rlrsim-example}. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/lme4_rlrt.R}
@@ -2301,7 +2339,7 @@ In order to test the significance of a random effect we can use the \texttt{RLRs
 \label{listing:rlrsim-example}
 \end{listing}
 
-Lastly, we demonstrate how fit an LMM with a specified correlation structure using \texttt{nlme}. The income dataset consists of individuals' income measured over time (in years) along with several relevant covariates such as education and gender identity. Since time is measured in years and thus is evenly-spaced, we choose an \gls{ar}-1 structure. We also fit another model without age as a covariate, then use the \texttt{anova()} function to perform an F test of age's significance - we can do this because we fit the models via maximum likelihood instead of \gls{reml}. The \textit{p}-value is well above $\alpha = 0.05$, thus we fail to reject the null hypothesis that age has no effect. We also compare the models via \gls{aic}, and see that the model without age is slightly preferable. 
+Lastly, in Source Code \ref{listing:nlme-example} we demonstrate how fit an LMM with a specified correlation structure using \texttt{nlme}. The income dataset consists of individuals' income measured over time (in years) along with several relevant covariates such as education and gender identity. Since time is measured in years and thus is evenly-spaced, we choose an \gls{ar}-1 structure. We also fit another model without age as a covariate, then use the \texttt{anova()} function to perform an F test of age's significance - we can do this because we fit the models via maximum likelihood instead of \gls{reml}. The \textit{p}-value is well above $\alpha = 0.05$, thus we fail to reject the null hypothesis that age has no effect. We also compare the models via \gls{aic}, and see that the model without age is slightly preferable. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/nlme_correlation_structure.R}
@@ -3114,7 +3152,7 @@ Outside of R, SAS provides \href{https://support.sas.com/documentation/cdl/en/st
 
 \subsubsection{Example code}
 
-Here we utilize the \texttt{geeM} package to fit a Poisson \gls{gee} and then a Negative-binomial \gls{gee}. This requires first pivoting the data from wide to long format; long format is generally what is expected from most longitudinal data modeling packages. We also add a variable specifying how long each observation period was, with the baseline period being 8 weeks and all other being 2 weeks. We provide this variable as an offset on the link scale. 
+In Source Code \ref{listing:geem-example} we utilize the \texttt{geeM} package to fit a Poisson \gls{gee} and then a Negative-binomial \gls{gee}. This requires first pivoting the data from wide to long format; long format is generally what is expected from most longitudinal data modeling packages. We also add a variable specifying how long each observation period was, with the baseline period being 8 weeks and all other being 2 weeks. We provide this variable as an offset on the link scale. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/geem_count_regression.R}
@@ -3223,7 +3261,7 @@ Inference for \glspl{glmm} is rather complicated, and suffers from many of the s
 
 \subsubsection{Example code}
 
-Here we leverage the \texttt{glmmTMB} package to fit Poisson and Negative-binomial models (using maximum likelihood) to a longitudinal dataset consisting of counts of epileptic patient seizures over time as a response to the treatment progabide. 
+As shown in Source Code \ref{listing:glmmtmb-example}, we can leverage the \texttt{glmmTMB} package to fit Poisson and Negative-binomial models (using maximum likelihood) to a longitudinal dataset consisting of counts of epileptic patient seizures over time as a response to the treatment progabide. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/glmmtmb_count_regression.R}
@@ -3419,7 +3457,7 @@ Beyond R, SAS implements \href{https://support.sas.com/documentation/cdl/en/stat
 
 \subsubsection{Example code}
 
-Below is a short example of how to fit two families of model using the \texttt{mgcv} library. The dataset used is a study on the relationship between various meteorological variables and atmospheric ozone concentration, with the data being gathered in Los Angeles in 1976. 
+Shown in Source Code \ref{listing:mgcv-example} is a short example of how to fit two families of model using the \texttt{mgcv} library. The dataset used is a study on the relationship between various meteorological variables and atmospheric ozone concentration, with the data being gathered in Los Angeles in 1976. 
 
 \begin{listing}[h!]
 \inputminted{r}{Example-Code/mgcv_count_regression.R}
@@ -3758,7 +3796,7 @@ This leads to the jackknife estimated variance, which is given by:
     \widehat{\text{Var}}\left(\hat{\theta}_\text{jack}\right) = (n(n-1))^{-1} \sum_{i=1}^n \left(\Tilde{\theta}_{(i)} - \bar{\Tilde{\theta}_{(i)}}\right)^2
 \end{equation}
 
-The jackknife standard error is then the square root of the jackknife estimated variance. Note that the jackknife is known to not perform well when estimating confidence intervals for sample quantiles, as quantiles are not well-approximated by averages of \gls{rv}. 
+The jackknife standard error is then the square root of the jackknife estimated variance. Note that the jackknife is known to not perform well when estimating confidence intervals for sample quantiles, as quantiles are not well-approximated by averages of \glspl{rv}. 
 
 \chapter{Worked Examples} \label{chap:worked-examples}
 
@@ -3887,6 +3925,128 @@ This quantity has an asymptotic $\chi$-squared distribution with $n - p - 1$ deg
 \begin{equation}\label{eq:ex-ols-sigma-squared-unbiased-asymptotics}
     (n - p - 1)\hat{\sigma}^2 \sim \sigma^2\chi^2_{n-p-1}
 \end{equation}
+
+The following is taken verbatim from Question 1 of the 2023 Qualifying Exam. Suppose we observe a sequence of \glspl{rv} $X_1, \dots, X_n \sim \text{Pareto}(\theta)$, such that $X_i$ has the following \gls{pdf} where $\phi > 0$ is an \textit{a priori} known scale parameter:
+
+\begin{equation}\label{eq:ex-ols-pareto-pdf}
+    p(x_i|\theta) = \frac{\theta\phi^\theta}{x_i^{\theta+1}} \quad x_i \geq \phi
+\end{equation}
+
+Our first task is to identify the likelihood function for $\theta$, which we show below:
+
+\begin{equation}\label{eq:ex-ols-pareto-likelihood}
+    \begin{aligned}
+        \mathcal{L}(\theta; x_1, \dots, x_n)
+          &= \prod_{i=1}^n f(x_i|\theta) \\
+          &= \prod_{i=1}^n \frac{\theta\phi^\theta}{x_i^{\theta+1}} \\
+          &= \theta^n\phi^{n\theta} \prod_{i=1}^n x_i^{-(\theta + 1)} \\
+    \end{aligned}
+\end{equation}
+
+It follows that the log-likelihood is:
+
+\begin{equation}\label{eq:ex-ols-pareto-log-likelihood}
+    \begin{aligned}
+        \mathcal{l}(\theta; x_1, \dots, x_n)
+          &= \log\left(\theta^n\phi^{n\theta} \prod_{i=1}^n x_i^{-(\theta + 1)}\right) \\
+          &= n\log(\theta) + n\theta\log(\phi) + \sum_{i=1}^n -(\theta + 1)\log(x_i) \\
+          &= n\log(\theta) + n\theta\log(\phi) -(\theta + 1) \sum_{i=1}^n \log(x_i) \\
+    \end{aligned}
+\end{equation}
+
+Our next goal is to find the score function for $\theta$, which we do by differentiating the log-likelihood with respect to $\theta$:
+
+\begin{equation}\label{eq:ex-ols-pareto-score-function}
+    \begin{aligned}
+        \mathcal{S}(\theta; x_1, \dots, x_n)
+          &= \frac{\partial}{\partial\theta}\left(n\log(\theta) + n\theta\log(\phi) -(\theta + 1) \sum_{i=1}^n \log(x_i)\right) \\
+          &= \frac{n}{\theta} + n\log(\phi) - \sum_{i=1}^n \log(x_i) \\
+          &= n \left(\theta^{-1} + \log(\phi)\right) - \sum_{i=1}^n \log(x_i) \\
+    \end{aligned}
+\end{equation}
+
+Continuing on, we need to find the expected Fisher's Information for $\theta$:
+
+\begin{equation}\label{eq:ex-ols-pareto-fishers-information}
+    \begin{aligned}
+        \mathcal{I}_n(\theta)
+          &= -\mathbb{E}\left[\frac{\partial}{\partial\theta} \left(n \left(\theta^{-1} + \log(\phi)\right) - \sum_{i=1}^n \log(x_i)\right) \bigg | \theta\right] \\
+          &= -\mathbb{E}\left[-n\theta^{-2} | \theta\right] \\
+          &= n\theta^{-2} \\
+        \implies I_1(\theta) &= \theta^{-2} \\
+    \end{aligned}
+\end{equation}
+
+The next part tells us to find the \gls{mle} of $\theta$, which we do by setting the score function equal to 0 and solving (for a confirmation of this result see \cite{rytgaard_estimation_1990}):
+
+\begin{equation}\label{eq:ex-ols-pareto-theta-mle}
+    \begin{aligned}
+        n \left(\theta^{-1} + \log(\phi)\right) - \sum_{i=1}^n \log(x_i) &= 0 \\
+        n\theta^{-1} + n\log(\phi) &= \sum_{i=1}^n \log(x_i) \\
+        n\theta^{-1} &= \sum_{i=1}^n \log(x_i) - \log(\phi) \\
+        \implies \frac{n}{\sum_{i=1}^n \log\left(\frac{x_i}{\phi}\right)} &= \hat{\theta}_n \\
+    \end{aligned}
+\end{equation}
+
+Next, we're told to find a large sample, model-based variance estimator for $\hat{\theta}_n$ as a function of $\bar{Z}_n$, where $\bar{Z}_n$ is defined like so:
+
+\begin{equation}\label{eq:ex-ols-pareto-zbar-definition}
+    \begin{aligned}
+        \mathcal{S}(\theta; x_1, \dots, x_n)
+          &= n \left(\theta^{-1} + \log(\phi)\right) - \sum_{i=1}^n \log(x_i) \\
+          &= n\theta^{-1} - \sum_{i=1}^n \log(x_i) - \log(\phi) \\
+          &= n\theta^{-1} - \sum_{i=1}^n Z_i \\
+          &= n\left(\theta^{-1} - \bar{Z}_n\right) \\
+    \end{aligned}
+\end{equation}
+
+From \cite[Chapter~2.4.1]{wakefield_bayesian_2013}, the asymptotic distribution of the \gls{mle} is given by:
+
+\begin{equation}\label{eq:ex-ols-pareto-mle-asymptotic-dist}
+    \begin{aligned}
+        n^{\frac{1}{2}} \left(\hat{\theta}_n - \theta\right) &\overset{d}{\to} \mathcal{N}\left(0, I_1(\theta)^{-1}\right) \\
+        n^{\frac{1}{2}} \left(\hat{\theta}_n - \theta\right) &\overset{d}{\to} \mathcal{N}\left(0, \theta^2\right) \\
+    \end{aligned}
+\end{equation}
+
+Lastly, we are instructed to utilize sandwich variance estimation to show that, when $n$ is large, a variance estimator for $\hat{\theta}_n$ is $n^{-1}S^2_n\left(\bar{Z}_n\right)^{-4}$, where $S^2_n = \text{Var}(Z_i)$. We recall that the sandwich estimator of variance is defined like so, where $G_n(\theta) = n^{-1} \sum_{i=1}^n G(\theta, y_i)$ is an estimating equation for $\theta$ (refer to Section \ref{sec:sandwich-variance-estimation}):
+
+\begin{equation}\label{eq:ex-ols-pareto-sandwich-variance-estimator}
+    \begin{aligned}
+        n^{\frac{1}{2}}\left(\hat{\theta_n} - \theta\right) &\overset{d}{\to} \mathcal{N}\left(0, B^{-1} M \left(B^\intercal\right)^{-1}\right) \\
+        B &= \mathbb{E}\left[\frac{\partial}{\partial\theta} G(\theta, y)\right] \\
+        M &= \text{Var}(G(\theta, y)) \\
+    \end{aligned}
+\end{equation}
+
+In our case, we define the estimating equation as:
+
+\begin{equation}\label{eq:ex-ols-pareto-estimating-equation}
+    \begin{aligned}
+        G_n(\theta, y) 
+          &= n^{-1} \mathcal{S}(\theta; y_1, \dots, y_n) \\
+          &= n^{-1} \sum_{i=1}^n \frac{\partial}{\partial\theta} \left(\log(f(x_i | \theta))\right) \\
+          &= n{-1} \sum_{i=1}^n \frac{\partial}{\partial\theta} \left(\log(\theta) + \theta\log(\phi) - (\theta + 1)\log(x_i)\right) \\
+          &= n^{-1} \sum_{i=1}^n \theta^{-1} + \log\left(\frac{\phi}{x_i}\right) \\
+    \end{aligned}
+\end{equation}
+
+Now we can define the ``pieces'' of our sandwich:
+
+\begin{equation}\label{eq:ex-ols-pareto-sandwich-pieces}
+    \begin{aligned}
+        B 
+          &= \mathbb{E}\left[\frac{\partial}{\partial\theta} \left(\theta^{-1} + \log\left(\frac{\phi}{x_i}\right)\right)\right] \\
+          &= \mathbb{E}\left[-\theta^{-2}\right] \\
+          &= -\theta^{-2} \\
+        M 
+          &= \text{Var}\left(\theta^{-1} + \log\left(\frac{\phi}{x_i}\right)\right) \\
+          &= \mathbb{E}\left[\left(\theta^{-1} + \log\left(\frac{\phi}{x_i}\right)\right)^2\right] \\
+          &= \mathbb{E}\left[\theta^{-2} + 2\theta^{-1}\log\left(\frac{\phi}{x_i}\right) + \log^2\left(\frac{\phi}{x_i}\right)\right] \\
+    \end{aligned}
+\end{equation}
+
+TODO -- finished this question after asking someone for help.
 
 \subsection{Regularized regression}
 
@@ -4316,6 +4476,86 @@ Setting equal to zero and solving provides us with $\hat{\lambda}$:
         \implies \hat{\lambda} &= n\left(\sum_{i=1}^n y_i\right)^{-1} \\
     \end{aligned}
 \end{equation}
+
+This next question is taken directly from Question 5 of the 2023 Qualifying Exam. Suppose we have a logistic regression model of the following form:
+
+\begin{equation}\label{eq:ex-glm-2023q5-binomial-model-form-1}
+    \log\left(\frac{\pi_i}{1-\pi_i}\right) = \beta X_i 
+\end{equation}
+
+Rearranging allows us to solve for $\pi_i$
+
+\begin{equation}\label{eq:ex-glm-2023q5-binomial-model-form-2}
+    \begin{aligned}
+        \frac{\pi_i}{1-\pi_i} &= e^{\beta X_i} \\
+        \pi_i &= e^{\beta X_i} - \pi_i e^{\beta X_i} \\
+        \pi_i \left(1 - e^{\beta X_i}\right) &= e^{\beta X_i} \\
+        \pi_i &= \frac{e^{\beta X_i}}{1-e^{\beta X_i}} \\
+    \end{aligned}
+\end{equation}
+
+Our first goal is to find the log-likelihood of the response variable $y_i$, where $y_i \sim \text{Binomial}(n_i, \pi_i)$. We start by defining the \gls{pmf}:
+
+\begin{equation}\label{eq:ex-glm-2023q5-binomial-pmf}
+    f(y_i | n_i, \pi_i) = \binom{n_i}{\pi_i} \pi_i^{y_i} (1-\pi_i)^{n_i-y_i}
+\end{equation}
+
+The likelihood is then:
+
+\begin{equation}\label{eq:ex-glm-2023q5-binomial-likelihood}
+    \mathcal{L}\left(n_i, \pi_i; y_1, \dots, y_n\right) = \prod_{i=1}^n \binom{n_i}{y_i} \pi_i^{y_i} (1-\pi_i)^{n_i-y_i}
+\end{equation}
+
+Taking the log provides us with the log-likelihood:
+
+\begin{equation}\label{eq:ex-glm-2023q5-binomial-loglikelihood}
+    \begin{aligned}
+        \mathcal{l}\left(n_i, \pi_i; y_1, \dots, y_n\right) 
+          &= \log\left(\prod_{i=1}^n \binom{n_i}{y_i} \pi_i^{y_i} (1-\pi_i)^{n_i-y_i}\right) \\
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i \log(\pi_i) + (n_i-y_i)\log(1-\pi_i) \\
+    \end{aligned}
+\end{equation}
+
+Next we need to find the deviance of the fitted model. Recall how the deviance is defined from Equations \ref{eq:glm-resid-deviance-2} and \ref{eq:glm-resid-deviance-3}. We define the overall deviance for our logistic regression as twice the difference between the log-likelihood of the saturated model and that of the fitted model :
+
+\begin{equation}\label{eq:ex-glm-2023q5-overall-deviance-1}
+    D = 2 \left(\mathcal{l}(\beta; y_1, \dots, y_n) - \mathcal{l}\left(\hat{\beta}; y_1, \dots, y_n\right)\right)
+\end{equation}
+
+The log-likelihood of the saturated model is given by the following, where we substitute in the \gls{mle} $\pi_i = \frac{y_i}{n_i}$:
+
+\begin{equation}\label{eq:ex-glm-2023-q5-saturated-model-log-likelihood}
+    \begin{aligned}
+        \mathcal{l}(\beta; y_1, \dots, y_n)
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log(\pi_i) + n_i\log(1 - \pi_i) - y_i\log(1 - \pi_i) \\
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{y_i}{n_i}\right) + n_i \log\left(1 - \frac{y_i}{n_i}\right) - y_i \log\left(1 - \frac{y_i}{n_i}\right) \\
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{y_i}{n_i}\right) + n_i\log\left(\frac{n_i-y_i}{n_i}\right) - y_i\log\left(\frac{n_i-y_i}{n_i}\right) \\ 
+    \end{aligned}
+\end{equation}
+
+The log-likelihood for the fitted model is shown below, where we substitute in the \gls{mle} $\hat{y}_i = n_i\hat{\pi}_i$:
+
+\begin{equation}\label{eq:ex-glm-2023-q5-fitted-model-log-likelihood}
+    \begin{aligned}
+        \mathcal{l}\left(\hat{\beta}; y_1, \dots, y_n\right)
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{\hat{y}_i}{n_i}\right) + n_i\log\left(1 - \frac{\hat{y}_i}{n_i}\right) - y_i\log\left(1 - \frac{\hat{y}_i}{n_i}\right) \\
+          &= \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{\hat{y}_i}{n_i}\right) + n_i\log\left(\frac{n_i - \hat{y}_i}{n_i}\right) - y_i\log\left(\frac{n_i - \hat{y}_i}{n_i}\right) \\
+    \end{aligned}
+\end{equation}
+
+Now we can derive the deviance, which has a $\chi$-squared distribution with \gls{df} equal to $n-p$:
+
+\begin{equation}\label{eq:ex-glm-2023-q5-overall-deviance-2}
+    \begin{split}
+        D
+          &\propto \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{y_i}{n_i}\right) + n_i\log\left(\frac{n_i-y_i}{n_i}\right) - y_i\log\left(\frac{n_i-y_i}{n_i}\right) \\ &-  \sum_{i=1}^n \log\left(\binom{n_i}{y_i}\right) + y_i\log\left(\frac{\hat{y}_i}{n_i}\right) + n_i\log\left(\frac{n_i - \hat{y}_i}{n_i}\right) - y_i\log\left(\frac{n_i - \hat{y}_i}{n_i}\right) \\
+          &\propto \sum_{i=1}^n y_i \left(\log\left(\frac{y_i}{n_i}\right) - \log\left(\frac{\hat{y}_i}{n_i}\right)\right) + n_i \left(\log\left(\frac{n_i-y_i}{n_i}\right) - \log\left(\frac{n_i-\hat{y}_i}{n_i}\right)\right) \\ &- y_i \left(\log\left(\frac{n_i-y_i}{n_i}\right) - \log\left(\frac{n_i - \hat{y}_i}{n_i}\right)\right) \\
+          &\propto \sum_{i=1}^n y_i \log\left(\frac{y_i}{\hat{y}_i}\right) + n_i \log\left(\frac{n_i-y_i}{n_i-\hat{y}_i}\right) - y_i\log\left(\frac{n_i-y_i}{n_i-\hat{y}_i}\right) \\
+          &\propto \sum_{i=1}^n y_i \log\left(\frac{y_i}{\hat{y}_i}\right) + (n_i-y_i) \log\left(\frac{n_i-y_i}{n_i-\hat{y}_i}\right) \\
+    \end{split}
+\end{equation}
+
+Next, we need to show that the \gls{lrt} statistic and Pearson's $\chi$-squared statistic have the same distribution. When comparing the saturated and fitted models, the \gls{lrt} is equivalent to the deviance as defined above. 
 
 \section{Large sample theory}\label{sec:examples-lst}
 
