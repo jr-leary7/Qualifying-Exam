@@ -24,6 +24,8 @@ jobs:
           # install extra .ttf/.otf fonts.
           # extra_fonts: ./fonts/*.ttf
           # arbitrary bash codes to be executed before compiling LaTeX documents
+          # instruct latexmk to enable --shell-escape
+          latexmk_shell_escape: true
           pre_compile: tlmgr update --self && tlmgr update --all
           # arbitrary bash codes to be executed after compiling LaTeX documents
           post_compile: latexmk -c
