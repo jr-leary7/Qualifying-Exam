@@ -17,6 +17,8 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{unicode-math}
+% fonts and such 
+\usepackage{fontspec}
 % algorithm blocks
 \usepackage{algorithm}
 \usepackage{algorithmic}
@@ -2516,7 +2518,7 @@ To compare the alternate model to the null model, the following \gls{lrt} statis
     -2\log\left(\frac{\mathcal{L}_0}{\mathcal{L}_1}\right)
 \end{equation}
 
-This quantity is asymptotically $\chi$-squared distributed under the null hypothesis with degrees of freedom equal to the difference in number of estimated parameters between models. 
+This quantity is asymptotically $\chi$-squared distributed under the null hypothesis with degrees of freedom equal to the difference in number of estimated parameters between models; refer to \cite{wilks_large-sample_1938} for the original derivation. 
 
 Next, a Wald test can be used to test individual coefficients. To test the null hypothesis $H_0: \beta = \beta_0$, the statistic is computed using the estimated standard error of $\hat{\beta}$:
 
@@ -2869,6 +2871,19 @@ The variance then becomes:
 An implementation of a test for overdispersion can be found in \texttt{odTest()} function of the \texttt{pscl} package. It uses a modified \gls{lrt} to compare a Poisson and Negative-binomial GLM and provides both a $\chi$-squared test statistic and accompanying \textit{p}-value. 
 
 When comparing nested models with overdispersion, such as Negative-binomial or quasi-Poisson models, an F test should be preferred over a $\chi$-squared test. An example of how to do this can be found in Source Code \ref{listing:count-regression-example}. 
+
+\subsubsection{Offsets}
+
+When fitting models to count data it is quite often necessary to include in the model an \textit{offset} to account for differing levels of exposure between observations. Continuous response models can include offsets as well, but the offset is most commonly used in e.g., Poisson or Negative-binomial models. This is perhaps best explained by an example. Suppose we are building an ecological model for the number of cases of malaria in several different cities. It wouldn't make sense to model just the total number of cases per city, as cities are of differing size, and thus larger cities would by necessity experience more cases. As such, we would want to account for differing population sizes in our model. The offset is a term in our model whose coefficient is constrained to be equal to 1. The Poisson model for the number of cases would then take the following form:
+
+\begin{equation}\label{eq:glm-poisson-offset form}
+    \begin{aligned}
+        \lambda_i &= ne^{\beta X_i} \\
+        \implies \log(\lambda_i) &= \log(n) + \beta X_i \\
+    \end{aligned}
+\end{equation}
+
+When including an offset in a model, most statistical software packages require that it be provided on the link scale. For example, in a Poisson or Negative-binomial model the offset is the logarithm of the exposure, whereas in a Gamma model the offset would be the inverse of the exposure. A good example of how an offset would be included in a model with a continuous response is the usage of a Gamma model to make inference about insurance claims. In this case the response would be the amount paid out per policy, and the offset would be the amount of time that the policy was active, as longer policies would of course be likely to have a higher amount of claims. For an example of the usage of offsets in discrete response models refer to Source Code \ref{listing:geem-example}. 
 
 \subsubsection{Example code}
 
@@ -4046,7 +4061,7 @@ Now we can define the ``pieces'' of our sandwich:
     \end{aligned}
 \end{equation}
 
-TODO -- finished this question after asking someone for help.
+TODO -- finish this question after asking someone for help.
 
 \subsection{Regularized regression}
 
@@ -4555,7 +4570,25 @@ Now we can derive the deviance, which has a $\chi$-squared distribution with \gl
     \end{split}
 \end{equation}
 
-Next, we need to show that the \gls{lrt} statistic and Pearson's $\chi$-squared statistic have the same distribution. When comparing the saturated and fitted models, the \gls{lrt} is equivalent to the deviance as defined above. 
+Next, we need to show that the \gls{lrt} statistic and Pearson's $\chi$-squared statistic have the same distribution. When comparing the saturated and fitted models, the log of the \gls{lrt} is equivalent to the deviance as defined above. Recall as well how we defined Pearson's $\chi$-squared statistic in Equation \ref{eq:glm-pearson-chi-squared-statistic}. We redefine it below specifically for logistic regression:
+
+\begin{equation}\label{eq:ex-glm-2023q5-pearsons-statistic}
+    \begin{aligned}
+        \chi^2 
+          &= \sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{V\left(\hat{\mu}_i\right)} \\
+          &= \sum_{i=1}^n \frac{\left(y_i - n_i\hat{\pi}_i\right)^2}{n_i\hat{\pi}_i\left(1-\hat{\pi}_i\right)} \\
+    \end{aligned}
+\end{equation}
+
+The \gls{lrt} statistic (\textit{not} the log of the \gls{lrt}) is defined as:
+
+\begin{equation}
+    \begin{aligned}
+        \lambda 
+          &= \frac{\mathcal{L}(\beta; y_1, \dots, y_n)}{\mathcal{L}\left(\hat{\beta}; y_1, \dots, y_n\right)} \\
+          &= \frac{}{}
+    \end{aligned}
+\end{equation}
 
 \section{Large sample theory}\label{sec:examples-lst}
 
